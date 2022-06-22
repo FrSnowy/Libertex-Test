@@ -30,7 +30,7 @@ const IncomeLimit: React.FC = () => {
         pre={limitType}
         value={limitType === '%' ? percent : value}
         withArrowController
-        format={InputFormat.currency()}
+        format={InputFormat.number()}
         onChange={onLimitChangeHandler}
       />
     </WithLabel>

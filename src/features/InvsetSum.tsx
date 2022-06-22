@@ -17,7 +17,7 @@ const InvestSum: React.FC = () => {
       <Input
         pre='$'
         value={investSum}
-        format={InputFormat.currency({ maxValue: 200000 })}
+        format={InputFormat.number({ maxValue: 200000 })}
         onChange={onChangeHandler}
       />
     </WithLabel>

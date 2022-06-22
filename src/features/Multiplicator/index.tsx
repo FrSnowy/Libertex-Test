@@ -25,7 +25,7 @@ const Multiplicator: React.FC = () => {
         />
       </Elements.InputWrapper>
       <Elements.FinalSum>
-        = ${InputFormat.currency().to(investSum * multiplicator)}
+        = ${InputFormat.number().to(investSum * multiplicator)}
       </Elements.FinalSum>
     </WithLabel>
   ), [investSum, multiplicator, onChangeHandler])
