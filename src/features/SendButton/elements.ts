@@ -9,30 +9,26 @@ export const ButtonWrapper = styled.div<{ direction: Direction }>`
     margin-right: 8px;
   }
 
-  ${props => props.direction === 'growth' && css`
-    ${Button} {
-      background-color: #53a642;
-    }
-  `};
-
-  ${props => props.direction === 'reduction' && css`
-    ${Button} {  
-      background-color: #f26666;
-    }
-  `};
-
   ${Button} {
-    color: #eee;
     height: 44px;
+
     ${PreContainer} {
       opacity: 0.7;
     }
 
     &:hover {
-      color: #fff;
       ${PreContainer} {
         opacity: 1;
       }
     }
+
+    ${p => css`
+      background-color: ${p.direction === 'growth' ? p.theme.colors.success : p.theme.colors.error};
+      color: ${p.theme.colors.text.contrastLight};
+
+      &:hover {
+        color: ${p.theme.colors.text.contrast};
+      }
+    `};
   }
 `;

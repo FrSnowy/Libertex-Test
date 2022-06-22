@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
 export const FinalSum = styled.span`
-  color: #909294;
-  margin-left: 4px;
+  margin-left: 5px;
   display: inline-flex;
   flex: none;
+  color: ${p => p.theme.colors.text.light};
 `;
 
 export const InputWrapper = styled.div`
-  width: 54px;
+  width: 60px;
+  min-width: 44px;
   display: flex;
-  flex: none;
 `;

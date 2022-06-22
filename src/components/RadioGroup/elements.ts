@@ -11,16 +11,23 @@ export const GroupWrapper = styled(Container)`
 `;
 
 export const RadioBtn = styled.div<{ checked?: boolean }>`
-  border: 1px solid #c0c2c4;
   border-radius: 50%;
   width: 16px;
   height: 16px;
   margin-right: 4px;
-  background: linear-gradient(90deg, #f0f2f4, #fff);
   cursor: pointer;
   position: relative;
   top: 0;
   left: 0;
+
+  ${p => css`
+    background: ${p.theme.colors.controllerBg};
+    border: ${p.theme.border(p.theme.colors.border.main)};
+
+    & + span {
+      color: ${p.theme.colors.text.main};
+    }
+  `};
 
   ${p => p.checked && css`
     &::after {
@@ -33,7 +40,7 @@ export const RadioBtn = styled.div<{ checked?: boolean }>`
       transform: translate(-50%, -50%);
       content: '';
       display: block;
-      background: #000;
+      background: ${p.theme.colors.text.main}
     }
   `};
 `;

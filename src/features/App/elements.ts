@@ -3,6 +3,8 @@ import styled from 'styled-components';
 export const Wrapper = styled.div`
   width: 288px;
   margin: 16px auto 0;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
 `;
 
 export const ButtonsWrapper = styled.div`

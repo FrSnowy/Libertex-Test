@@ -10,6 +10,7 @@ export const Label = styled.label`
   display: inline-flex;
   width: 50%;
   padding-right: 12px;
+  color: ${p => p.theme.colors.text.main};
 `;
 
 export const ChildrenWrapper = styled.div`

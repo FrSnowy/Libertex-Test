@@ -1,9 +1,9 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const ArrowsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  border-left: 1px solid #c0c2c4;
+  border-left: ${p => p.theme.border(p.theme.colors.border.main)};
 `;
 
 export const ArrowBlock = styled.div`
@@ -16,10 +16,13 @@ export const ArrowBlock = styled.div`
   cursor: pointer;
   font-size: 8px;
   line-height: 16px;
-  color: #000;
-  background: linear-gradient(90deg, #f0f2f4, #fff);
   user-select: none;
-  &:not(:last-of-type) {
-    border-bottom: 1px solid #c0c2c4;
-  }
+
+  ${p => css`
+    color: ${p.theme.colors.text.main};
+    background: ${p.theme.colors.controllerBg};
+    &:not(:last-of-type) {
+      border-bottom: ${p => p.theme.border(p.theme.colors.border.main)}
+    }
+  `};
 `;

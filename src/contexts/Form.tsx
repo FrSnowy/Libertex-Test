@@ -106,9 +106,7 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     if (isTakeProfitActive) formattedData.takeProfit = takeProfitValue;
     if (isStopLossActive) formattedData.stopLoss = stopLossValue;
 
-    const result = await FormAPI.registerInvestment(formattedData);
-
-    console.log(formattedData, result);
+    return await FormAPI.registerInvestment(formattedData);
   }, [sumInv, mult, isTakeProfitActive, isStopLossActive, takeProfitValue, stopLossValue]);
 
   const value: FormT = {

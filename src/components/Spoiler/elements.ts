@@ -13,9 +13,9 @@ export const Title = styled.div`
   top: 0;
   left: 0;
   margin: 36px 0 20px;
-  color: #909294;
   cursor: pointer;
   user-select: none;
+  color: ${p => p.theme.colors.text.light};
 `;
 
 export const Icon = styled.div<{ isOpen?: boolean }>`
