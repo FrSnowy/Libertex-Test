@@ -1,65 +1,118 @@
 import React from 'react';
 import * as Elements from './elements';
+import { FormatFnT } from './formats';
 
-type InputProps = Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'as' | 'onChange'> & {
+type InputProps = Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'as' | 'onChange' | 'type' | 'defaultValue'> & {
   pre?: string | JSX.Element | null,
-  format?: {
-    to: (v: string) => string,
-    from:  (v: string) => string,
-  },
+  format?: ReturnType<FormatFnT>,
   onChange?: (v: string) => void,
-};
+  value?: number,
+  withArrowController?: boolean,
+};  
 
 const Input: React.FC<InputProps> = ({
   pre,
   format,
-  defaultValue,
+  value: outerValue = 0,
   onChange,
   label,
+  withArrowController,
   ...rest
 }) => {
-  const formattedDefValue = format ? format.to(`${defaultValue}`) : `${defaultValue}`;
-
   const ref = React.useRef<HTMLInputElement>(null);
+  const [value, setValue] = React.useState<string>('');
   const [position, setPosition] = React.useState<number | null>(null);
-  const [value, setValue] = React.useState<string>(formattedDefValue || '');
+  const [currentInterval, setCurrentInterval] = React.useState<number>(-1);
 
-  const onInputWithFormatFnChanged: React.ChangeEventHandler<HTMLInputElement> = e => {
-    if (!format) return;
+  React.useLayoutEffect(() => {
+    const initValue = format ? format.to(outerValue) : `${outerValue}`;
+    setValue(initValue);
+  }, [outerValue, format]);
+
+  const getFormattedValue = (e: React.ChangeEvent<HTMLInputElement>): string => {
+    if (!format) return e.target.value;
     const formattedValue = format.to(e.target.value);
-    const lengthDiff = formattedValue.length - e.target.value.length
+    const lengthDiff = formattedValue.length - e.target.value.length;
     const selectionStart = (e.target.selectionStart || e.target.value.length) + lengthDiff;
   
-    setValue(formattedValue);
     setPosition(selectionStart);
     return formattedValue;
   }
 
   const onInputValueChanged: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    if (format) return onInputWithFormatFnChanged(e);
-    setValue(e.target.value);
+    const val = getFormattedValue(e);
+    (!outerValue || !onChange) && setValue(val);
+    onChange && onChange(format ? format.from(val) : val);
     return e.target.value;
   }
 
-  React.useLayoutEffect(() => {
-    onChange && onChange(format ? format.from(value) : value);
-  }, [onChange, value, format])
-
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     if (!ref?.current) return;
     ref.current.selectionEnd = position;
   }, [position]);
 
   const preView = React.useMemo(() => (
     pre ? <Elements.Presymbol>{pre}</Elements.Presymbol> : null
-  ), [pre])
+  ), [pre]);
+
+  const arrowDeactivate = ()  => window.clearInterval(currentInterval);
+
+  const arrowActivate = (direction: 'up' | 'down', e: React.MouseEvent) => {
+    if (e.buttons !== 1) return;
+    arrowDeactivate();
+    const target = e.currentTarget;
+
+    const updateValue = () => {
+      const clearedValue = format?.from(value) || '';
+      const numericValue = parseInt(clearedValue, 10) || 0;
+      const result = direction === 'up' ? `${numericValue + 1}` : `${numericValue - 1}`;
+      (!outerValue || !onChange) && setValue(result);
+      onChange && onChange(format ? format.from(result) : result);
+    };
+
+    const timeout = window.setTimeout(() => {
+      const intervalId = window.setInterval(updateValue, 16);
+      setCurrentInterval(intervalId);
+    }, 500);
+
+    const clearHandler = () => {
+      updateValue();
+      window.clearTimeout(timeout);
+      target.removeEventListener('mouseup', clearHandler);
+      target.removeEventListener('mouseleave', clearHandler);
+    }
+  
+    target.addEventListener('mouseup', clearHandler);
+    target.addEventListener('mouseleave', clearHandler);
+  };
+
+  const createHandlers = (direction: 'up' | 'down') => ({
+    onMouseEnter: (e: React.MouseEvent) => arrowActivate(direction, e),
+    onMouseDown: (e: React.MouseEvent) => arrowActivate(direction, e),
+    onMouseLeave: arrowDeactivate,
+    onMouseUp: arrowDeactivate,
+  });
 
   return (
-    <Elements.Wrapper>
+    <Elements.Wrapper onClick={() => ref.current?.focus()}>
       {preView}
-      <Elements.Input value={value} ref={ref} onChange={onInputValueChanged} {...rest}/>
+      <Elements.Input
+        value={value}
+        ref={ref}
+        onChange={onInputValueChanged}
+        {...rest}
+      />
+      {
+        withArrowController && (
+          <Elements.ArrowsWrapper>
+            <Elements.ArrowBlock {...createHandlers('up')}>▲</Elements.ArrowBlock>
+            <Elements.ArrowBlock {...createHandlers('down')}>▼</Elements.ArrowBlock>
+          </Elements.ArrowsWrapper>
+        )
+      }
     </Elements.Wrapper>
   )
 };
 
+export * as InputFormat from './formats';
 export default Input;

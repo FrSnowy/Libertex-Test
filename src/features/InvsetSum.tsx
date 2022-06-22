@@ -1,41 +1,27 @@
 import React from 'react';
-import Input from '../components/Input';
-import WithLabel from '../components/WithLabel';
+import Input, { InputFormat } from 'components/Input';
+import WithLabel from 'components/WithLabel';
+import { FormContext } from 'contexts/Form';
 
-// str to 9 999 999.00 format
-const formatSum = (v: string) => {
-  if (v[0] === '0' && v.length > 1) v = v.substring(1, v.length);
-  let parsedV = v.replace(/[^0-9]/g, '');
-  const numericV = parseInt(parsedV, 10);
-  if (numericV > 200000) parsedV = '200000';
-  parsedV = parsedV.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
-  return parsedV;
-}
+const InvestSum: React.FC = () => {
+  const { investSum, set } = React.useContext(FormContext);
+  const { investSum: setInvestSum } = set;
 
-type InvestSumProps = {
-  value?: number,
-  onChange?: (v: number) => number,
-}
+  const onChangeHandler = React.useCallback((v: string): void => {
+    const investSum = parseInt(v, 10) || 0;
+    setInvestSum(investSum);
+  }, [setInvestSum]);
 
-const InvestSum: React.FC<InvestSumProps> = ({
-  value,
-  onChange
-}) => {
-  return (
+  return React.useMemo(() => (
     <WithLabel label='Сумма инвестиции'>
       <Input
         pre='$'
-        defaultValue={5000}
-        value={value}
-        format={{
-          to: formatSum,
-          from: v => v.replace(/[^0-9]/g, ''),
-        }}
-        onChange={v => onChange && onChange(parseInt(v, 10) || 0)}
+        value={investSum}
+        format={InputFormat.currency({ maxValue: 200000 })}
+        onChange={onChangeHandler}
       />
     </WithLabel>
-    
-  )
+  ), [investSum, onChangeHandler])
 }
 
 export default InvestSum;

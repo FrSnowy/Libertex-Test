@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Elements from './elements';
-import { ReactComponent as SpoilerIcon } from '../../assets/arrow-right.svg';
+import { ReactComponent as SpoilerIcon } from 'assets/arrow-right.svg';
 
 type SpoilerProps = {
   children: React.ReactNode;

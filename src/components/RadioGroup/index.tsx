@@ -37,7 +37,7 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
 }) => {
   const [selected, setSelected] = React.useState<string | null>(selectedByDefault || null);
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     setSelected(selectedByDefault || null);
   }, [selectedByDefault]);
 

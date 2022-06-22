@@ -16,4 +16,5 @@ export const ChildrenWrapper = styled.div`
   display: inline-flex;
   width: 50%;
   padding-left: 12px;
+  align-items: center;
 `;
