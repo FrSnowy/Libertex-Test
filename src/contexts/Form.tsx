@@ -1,6 +1,6 @@
 import React from 'react';
 
-type LimitType = {
+export type LimitType = {
   active: boolean,
   percent: number,
   value: number,
@@ -61,21 +61,27 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const [incomeLimitValue, setIncomeLimitValue] = React.useState<number>(defaultContextValue.incomeLimit.value);
   const [isLossLimitActive, setIsLossLimitActive] = React.useState<boolean>(defaultContextValue.lossLimit.active);
   const [lossLimitValue, setLossLimitValue] = React.useState<number>(defaultContextValue.lossLimit.value);
-  const [lossLimitPercent, setLossLimitPercent] = React.useState<number>(defaultContextValue.lossLimit.value);
+  const [lossLimitPercent, setLossLimitPercent] = React.useState<number>(defaultContextValue.lossLimit.percent);
 
-  const setIncomeLimit = React.useCallback((t: '%' | '$', v: number) => {
-    switch (t) {
-      case '%':
-        setIncomeLimitPercent(v);
-        setIncomeLimitValue(investSum * (v / 100));
-        break;
-      case '$':
-      default:
-        setIncomeLimitPercent((incomeLimitValue / investSum) * 100);
-        setIncomeLimitValue(v); 
-        break;
+  const setLimit = React.useCallback((limitType: 'income' | 'loss') => {
+    const setPercent = limitType === 'income' ? setIncomeLimitPercent : setLossLimitPercent;
+    const setValue = limitType === 'income' ? setIncomeLimitValue : setLossLimitValue;
+    const value = limitType === 'income' ? incomeLimitValue : lossLimitValue;
+
+    return (t: '%' | '$', v: number) => {
+      switch (t) {
+        case '%':
+          setPercent(v);
+          setValue(investSum * (v / 100));
+          break;
+        case '$':
+        default:
+          setPercent((value / investSum) * 100);
+          setValue(v); 
+          break;
+      }
     }
-  }, [investSum, incomeLimitValue]);
+  }, [investSum, incomeLimitValue, lossLimitValue])
 
   React.useEffect(() => {
     switch(limitType) {
@@ -90,7 +96,7 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
         const incomePercent = parseFloat((incomeLimitValue / investSum).toFixed(2));
         const lossPercent = parseFloat((lossLimitValue / investSum).toFixed(2));
         setIncomeLimitPercent(incomePercent * 100);
-        setLossLimitPercent(lossPercent);
+        setLossLimitPercent(lossPercent * 100);
         break;
     }
   }, [investSum, limitType, incomeLimitValue, incomeLimitPercent, lossLimitValue, lossLimitPercent]);
@@ -114,9 +120,9 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       multiplicator: setMultiplicator,
       limitType: setLimitType,
       incomeLimitActive: setIsIncomeLimitActive,
-      incomeLimitValue: setIncomeLimit,
+      incomeLimitValue: setLimit('income'),
       lossLimitActive: setIsLossLimitActive,
-      lossLimitValue: setIncomeLimit,
+      lossLimitValue: setLimit('loss'),
     }
   };
 

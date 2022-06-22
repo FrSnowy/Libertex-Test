@@ -1,28 +1,31 @@
 import React from 'react';
 import Input, { InputFormat } from 'components/Input';
 import WithLabel from 'components/WithLabel';
-import { FormContext } from 'contexts/Form';
+import { FormContext, LimitType } from 'contexts/Form';
 import Check from 'components/Check';
 
-const IncomeLimit: React.FC = () => {
-  const { incomeLimit, limitType, set } = React.useContext(FormContext);
-  const { value, percent, active } = incomeLimit;
-  const { incomeLimitValue: setIncomeLimitValue, incomeLimitActive: setIncomeLimitActive } = set;
+type LimitProps = {
+  limit: LimitType,
+  setValue: (t: '%' | '$', v: number) => void,
+  setActive: (v: boolean) => void, 
+  children: string,
+}
 
-  const checkHandler = React.useCallback((v: boolean) => {
-    setIncomeLimitActive(v);
-  }, [setIncomeLimitActive]);
+const Limit: React.FC<LimitProps> = ({ limit, setValue, setActive, children }) => {
+  const { limitType } = React.useContext(FormContext);
+  const { active, value, percent } = limit;
 
+  const checkHandler = React.useCallback((v: boolean) => setActive(v), [setActive]);
   const onLimitChangeHandler = React.useCallback((v: string) => {
-    const incomeLimitValue = parseInt(v, 10) || 0;
-    setIncomeLimitValue(limitType, incomeLimitValue);
-  }, [limitType, setIncomeLimitValue]);
+    const numericVal = parseInt(v, 10) || 0;
+    setValue(limitType, numericVal)
+  }, [limitType, setValue]);
 
   const checkBox = React.useMemo(() => (
     <Check checked={active} onChange={checkHandler}>
-      Прибыль
+      {children}
     </Check>
-  ), [active, checkHandler]);
+  ), [active, children, checkHandler]);
 
   return React.useMemo(() => (
     <WithLabel label={checkBox}>
@@ -37,4 +40,4 @@ const IncomeLimit: React.FC = () => {
   ), [limitType, value, percent, onLimitChangeHandler, checkBox]);
 }
 
-export default IncomeLimit;
+export default Limit;
