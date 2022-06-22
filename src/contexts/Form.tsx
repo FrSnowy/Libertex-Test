@@ -1,129 +1,138 @@
 import React from 'react';
+import * as FormAPI from 'api/Form';
+import { Direction } from 'features/SendButton';
+
+export type LimitT = '%' | '$';
 
 export type LimitType = {
   active: boolean,
   percent: number,
   value: number,
+  setActive: (v: boolean) => void,
+  setValue: (t: LimitT, v: number) => void,
 };
 
 export type FormT = {
-  investSum: number,
-  multiplicator: number,
-  limitType: '%' | '$',
-  incomeLimit: LimitType,
-  lossLimit: LimitType,
-  set: {
-    investSum: (v: number) => void,
-    multiplicator: (v: number) => void,
-    limitType: (type: '%' | '$') => void,
-    incomeLimitActive: (v: boolean) => void,
-    incomeLimitValue: (t: '%' | '$', v: number) => void,
-    lossLimitActive: (v: boolean) => void,
-    lossLimitValue: (t: '%' | '$', v: number) => void,
-  },
+  sumInv: number,
+  setSumInv: (v: number) => void,
+  mult: number,
+  setMult: (v: number) => void,
+  limitType: LimitT,
+  setLimitType: (type: LimitT) => void,
+  takeProfit: LimitType,
+  stopLoss: LimitType,
+  registerInvestment: (direction: Direction) => void,
 }
 
-const defaultFn = (...args: any) =>  console.error('Form provider was not founded');
+const defaultFn = () => console.error('Form provider was not founded');
 
 const defaultContextValue: FormT = {
-  investSum: 5000,
-  multiplicator: 40,
+  sumInv: 5000,
+  setSumInv: defaultFn,
+  mult: 40,
+  setMult: defaultFn,
   limitType: '%',
-  incomeLimit: {
+  setLimitType: defaultFn,
+  takeProfit: {
     active: false,
     percent: 30,
     value: 1500,
+    setActive: defaultFn,
+    setValue: defaultFn,
   },
-  lossLimit: {
+  stopLoss: {
     active: false,
     percent: 30,
     value: 1500,
+    setActive: defaultFn,
+    setValue: defaultFn,
   },
-  set: {
-    investSum: defaultFn,
-    multiplicator: defaultFn,
-    limitType: defaultFn,
-    incomeLimitActive: defaultFn,
-    incomeLimitValue: defaultFn,
-    lossLimitActive: defaultFn,
-    lossLimitValue: defaultFn,
-  }
+  registerInvestment: defaultFn,
 }
 
 export const FormContext = React.createContext<FormT>(defaultContextValue);
 
 const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [investSum, setInvestSum] = React.useState<number>(defaultContextValue.investSum);
-  const [multiplicator, setMultiplicator] = React.useState<number>(defaultContextValue.multiplicator);
-  const [limitType, setLimitType] = React.useState<'%' | '$'>(defaultContextValue.limitType);
-  const [isIncomeLimitActive, setIsIncomeLimitActive] = React.useState<boolean>(defaultContextValue.incomeLimit.active);
-  const [incomeLimitPercent, setIncomeLimitPercent] = React.useState<number>(defaultContextValue.incomeLimit.percent);
-  const [incomeLimitValue, setIncomeLimitValue] = React.useState<number>(defaultContextValue.incomeLimit.value);
-  const [isLossLimitActive, setIsLossLimitActive] = React.useState<boolean>(defaultContextValue.lossLimit.active);
-  const [lossLimitValue, setLossLimitValue] = React.useState<number>(defaultContextValue.lossLimit.value);
-  const [lossLimitPercent, setLossLimitPercent] = React.useState<number>(defaultContextValue.lossLimit.percent);
-
-  const setLimit = React.useCallback((limitType: 'income' | 'loss') => {
-    const setPercent = limitType === 'income' ? setIncomeLimitPercent : setLossLimitPercent;
-    const setValue = limitType === 'income' ? setIncomeLimitValue : setLossLimitValue;
-    const value = limitType === 'income' ? incomeLimitValue : lossLimitValue;
-
-    return (t: '%' | '$', v: number) => {
-      switch (t) {
-        case '%':
-          setPercent(v);
-          setValue(investSum * (v / 100));
-          break;
-        case '$':
-        default:
-          setPercent((value / investSum) * 100);
-          setValue(v); 
-          break;
-      }
-    }
-  }, [investSum, incomeLimitValue, lossLimitValue])
+  const [sumInv, setSumInv] = React.useState<number>(defaultContextValue.sumInv);
+  const [mult, setMult] = React.useState<number>(defaultContextValue.mult);
+  const [limitType, setLimitType] = React.useState<LimitT>(defaultContextValue.limitType);
+  const [isTakeProfitActive, setIsTakeProfitActive] = React.useState<boolean>(defaultContextValue.takeProfit.active);
+  const [takeProfitPercent, setTakeProfitPercent] = React.useState<number>(defaultContextValue.takeProfit.percent);
+  const [takeProfitValue, setTakeProfitValue] = React.useState<number>(defaultContextValue.takeProfit.value);
+  const [isStopLossActive, setIsStopLossActive] = React.useState<boolean>(defaultContextValue.stopLoss.active);
+  const [stopLossValue, setStopLossValue] = React.useState<number>(defaultContextValue.stopLoss.value);
+  const [stopLossPercent, setStopLossPercent] = React.useState<number>(defaultContextValue.stopLoss.percent);
 
   React.useEffect(() => {
     switch(limitType) {
       case '%':
-        const incomeLimit = Math.round(investSum * (incomeLimitPercent / 100));
-        const lossLimit = Math.round(investSum * (lossLimitPercent / 100));
-        setIncomeLimitValue(incomeLimit);
-        setLossLimitValue(lossLimit);
+        const incomeLimit = Math.round(sumInv * (takeProfitPercent / 100));
+        const lossLimit = Math.round(sumInv * (stopLossPercent / 100));
+        setTakeProfitValue(incomeLimit);
+        setStopLossValue(lossLimit);
         break;
       case '$':
       default:
-        const incomePercent = parseFloat((incomeLimitValue / investSum).toFixed(2));
-        const lossPercent = parseFloat((lossLimitValue / investSum).toFixed(2));
-        setIncomeLimitPercent(incomePercent * 100);
-        setLossLimitPercent(lossPercent * 100);
+        const incomePercent = parseFloat((takeProfitValue / sumInv).toFixed(2));
+        const lossPercent = parseFloat((stopLossValue / sumInv).toFixed(2));
+        setTakeProfitPercent(incomePercent * 100);
+        setStopLossPercent(lossPercent * 100);
         break;
     }
-  }, [investSum, limitType, incomeLimitValue, incomeLimitPercent, lossLimitValue, lossLimitPercent]);
+  }, [sumInv, limitType, takeProfitValue, takeProfitPercent, stopLossValue, stopLossPercent]);
+
+  const setLimit = React.useCallback((limitType: 'take-profit' | 'stop-loss') => {
+    const setPercent = limitType === 'take-profit' ? setTakeProfitPercent : setStopLossPercent;
+    const setValue = limitType === 'take-profit' ? setTakeProfitValue : setStopLossValue;
+    const value = limitType === 'take-profit' ? takeProfitValue : stopLossValue;
+
+    return (t: LimitT, v: number) => {
+      switch (t) {
+        case '%':
+          setPercent(v);
+          setValue(sumInv * (v / 100));
+          break;
+        case '$':
+        default:
+          setPercent((value / sumInv) * 100);
+          setValue(v); 
+          break;
+      }
+    }
+  }, [sumInv, takeProfitValue, stopLossValue]);
+
+  const registerInvestment = React.useCallback(async (direction: Direction) => {
+    const formattedData: FormAPI.RegisterInvestmentData = { sumInv, mult, direction }
+    if (isTakeProfitActive) formattedData.takeProfit = takeProfitValue;
+    if (isStopLossActive) formattedData.stopLoss = stopLossValue;
+
+    const result = await FormAPI.registerInvestment(formattedData);
+
+    console.log(formattedData, result);
+  }, [sumInv, mult, isTakeProfitActive, isStopLossActive, takeProfitValue, stopLossValue]);
 
   const value: FormT = {
-    investSum,
-    multiplicator,
+    sumInv,
+    setSumInv,
+    mult,
+    setMult,
     limitType,
-    incomeLimit: {
-      active: isIncomeLimitActive,
-      value: incomeLimitValue,
-      percent: incomeLimitPercent,
+    setLimitType,
+    registerInvestment,
+    takeProfit: {
+      active: isTakeProfitActive,
+      value: takeProfitValue,
+      percent: takeProfitPercent,
+      setActive: setIsTakeProfitActive,
+      setValue: setLimit('take-profit'),
     },
-    lossLimit: {
-      active: isLossLimitActive,
-      value: lossLimitValue,
-      percent: lossLimitPercent,
+    stopLoss: {
+      active: isStopLossActive,
+      value: stopLossValue,
+      percent: stopLossPercent,
+      setActive: setIsStopLossActive,
+      setValue: setLimit('stop-loss'),
     },
-    set: {
-      investSum: setInvestSum,
-      multiplicator: setMultiplicator,
-      limitType: setLimitType,
-      incomeLimitActive: setIsIncomeLimitActive,
-      incomeLimitValue: setLimit('income'),
-      lossLimitActive: setIsLossLimitActive,
-      lossLimitValue: setLimit('loss'),
-    }
   };
 
   return (

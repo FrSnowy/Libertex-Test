@@ -6,14 +6,12 @@ import Check from 'components/Check';
 
 type LimitProps = {
   limit: LimitType,
-  setValue: (t: '%' | '$', v: number) => void,
-  setActive: (v: boolean) => void, 
   children: string,
 }
 
-const Limit: React.FC<LimitProps> = ({ limit, setValue, setActive, children }) => {
+const Limit: React.FC<LimitProps> = ({ limit, children }) => {
   const { limitType } = React.useContext(FormContext);
-  const { active, value, percent } = limit;
+  const { active, value, percent, setActive, setValue } = limit;
 
   const checkHandler = React.useCallback((v: boolean) => setActive(v), [setActive]);
   const onLimitChangeHandler = React.useCallback((v: string) => {
@@ -30,6 +28,7 @@ const Limit: React.FC<LimitProps> = ({ limit, setValue, setActive, children }) =
   return React.useMemo(() => (
     <WithLabel label={checkBox}>
       <Input
+        disabled={!active}
         pre={limitType}
         value={limitType === '%' ? percent : value}
         withArrowController
@@ -37,7 +36,7 @@ const Limit: React.FC<LimitProps> = ({ limit, setValue, setActive, children }) =
         onChange={onLimitChangeHandler}
       />
     </WithLabel>
-  ), [limitType, value, percent, onLimitChangeHandler, checkBox]);
+  ), [active, limitType, value, percent, onLimitChangeHandler, checkBox]);
 }
 
 export default Limit;

@@ -1,12 +1,5 @@
-import styled from 'styled-components';
-
-export const Wrapper = styled.div`
-  border: 1px solid #c0c2c4;
-  border-radius: 4px;
-  display: flex;
-  max-height: 32px;
-  overflow: hidden;
-`;
+import styled, { css } from 'styled-components';
+import { ArrowBlock, ArrowsWrapper } from './WithArrow/elements';
 
 export const Presymbol = styled.span`
   color: #c0c2c4;
@@ -25,25 +18,32 @@ export const Input = styled.input`
   padding: 4px 8px 4px 0;
 `;
 
-export const ArrowsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  border-left: 1px solid #c0c2c4;
-`;
 
-export const ArrowBlock = styled.div`
+export const Wrapper = styled.div<{ disabled?: boolean }>`
+  border: 1px solid #c0c2c4;
+  border-radius: 4px;
   display: flex;
-  height: 50%;
-  width: 16px;
-  height: 16px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 8px;
-  line-height: 16px;
-  background: linear-gradient(90deg, #f0f2f4, #fff);
-  //user-select: none;
-  &:not(:last-of-type) {
-    border-bottom: 1px solid #c0c2c4;
-  }
+  max-height: 32px;
+  overflow: hidden;
+  pointer-events: none;
+
+  ${props => props.disabled && css`
+    border: 1px solid #dfe0e1;
+
+    ${Presymbol} {
+      color: #dfe0e1;
+      user-select: none;
+    }
+
+    ${ArrowsWrapper} {
+      border-left: 1px solid #dfe0e1;
+    }
+
+    ${ArrowBlock} {
+      color: #919292;
+      &:not(:last-child) {
+        border-bottom: 1px solid #dfe0e1;
+      } 
+    }
+  `};
 `;

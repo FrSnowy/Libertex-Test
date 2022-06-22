@@ -16,6 +16,7 @@ export const ArrowBlock = styled.div`
   cursor: pointer;
   font-size: 8px;
   line-height: 16px;
+  color: #000;
   background: linear-gradient(90deg, #f0f2f4, #fff);
   user-select: none;
   &:not(:last-of-type) {

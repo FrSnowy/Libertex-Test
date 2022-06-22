@@ -4,24 +4,23 @@ import WithLabel from 'components/WithLabel';
 import { FormContext } from 'contexts/Form';
 
 const InvestSum: React.FC = () => {
-  const { investSum, set } = React.useContext(FormContext);
-  const { investSum: setInvestSum } = set;
+  const { sumInv, setSumInv } = React.useContext(FormContext);
 
   const onChangeHandler = React.useCallback((v: string): void => {
-    const investSum = parseInt(v, 10) || 0;
-    setInvestSum(investSum);
-  }, [setInvestSum]);
+    const sumInv = parseInt(v, 10) || 0;
+    setSumInv(sumInv);
+  }, [setSumInv]);
 
   return React.useMemo(() => (
     <WithLabel label='Сумма инвестиции'>
       <Input
         pre='$'
-        value={investSum}
+        value={sumInv}
         format={InputFormat.number({ maxValue: 200000 })}
         onChange={onChangeHandler}
       />
     </WithLabel>
-  ), [investSum, onChangeHandler])
+  ), [sumInv, onChangeHandler])
 }
 
 export default InvestSum;

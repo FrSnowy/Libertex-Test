@@ -12,8 +12,7 @@ export const Title = styled.div`
   position: relative;
   top: 0;
   left: 0;
-  margin-bottom: 20px;
-  margin-top: 36px;
+  margin: 36px 0 20px;
   color: #909294;
   cursor: pointer;
   user-select: none;

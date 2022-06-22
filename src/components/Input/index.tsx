@@ -9,6 +9,7 @@ type InputProps = Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'as' | 'onChan
   onChange?: (v: string) => void,
   value?: number,
   withArrowController?: boolean,
+  disabled?: boolean,
 };  
 
 const Input: React.FC<InputProps> = ({
@@ -18,6 +19,7 @@ const Input: React.FC<InputProps> = ({
   onChange,
   label,
   withArrowController,
+  disabled,
   ...rest
 }) => {
   const ref = React.useRef<HTMLInputElement>(null);
@@ -40,6 +42,7 @@ const Input: React.FC<InputProps> = ({
   }
 
   const onInputValueChanged: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+    if (disabled) return;
     const val = getFormattedValue(e);
     (!outerValue || !onChange) && setValue(val);
     onChange && onChange(format ? format.from(val) : val);
@@ -56,10 +59,11 @@ const Input: React.FC<InputProps> = ({
   ), [pre]);
 
   return (
-    <Elements.Wrapper onClick={() => ref.current?.focus()}>
+    <Elements.Wrapper onClick={() => ref.current?.focus()} disabled={disabled}>
       {preView}
       <Elements.Input
-        value={value}
+        contentEditable={!disabled}
+        value={disabled ? '' : value}
         ref={ref}
         onChange={onInputValueChanged}
         {...rest}

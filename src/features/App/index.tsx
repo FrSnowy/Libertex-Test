@@ -6,15 +6,10 @@ import InvestSum from 'features/InvsetSum';
 import Limit from 'features/Limit';
 import LimitType from 'features/LimitType';
 import { FormContext } from 'contexts/Form';
+import SendButton from 'features/SendButton';
 
 const App = () => {
-  const { incomeLimit, lossLimit, set } = React.useContext(FormContext);
-  const {
-    incomeLimitValue: setIncomeLimitValue,
-    incomeLimitActive: setIncomeLimitActive,
-    lossLimitValue: setLossLimitValue,
-    lossLimitActive: setLossLimitActive,
-  } = set;
+  const { takeProfit, stopLoss } = React.useContext(FormContext);
 
   return (
     <Elements.Wrapper>
@@ -22,21 +17,17 @@ const App = () => {
       <Multiplicator />
       <Spoiler title='Ограничить прибыль и убыток'>
         <LimitType />
-        <Limit
-          limit={incomeLimit}
-          setActive={setIncomeLimitActive}
-          setValue={setIncomeLimitValue}
-        >
+        <Limit limit={takeProfit}>
           Прибыль
         </Limit>
-        <Limit
-          limit={lossLimit}
-          setActive={setLossLimitActive}
-          setValue={setLossLimitValue}
-        >
+        <Limit limit={stopLoss}>
           Убыток
         </Limit>
       </Spoiler>
+      <Elements.ButtonsWrapper>
+        <SendButton direction='reduction' />
+        <SendButton direction='growth' />
+      </Elements.ButtonsWrapper>
     </Elements.Wrapper>
   )
 }

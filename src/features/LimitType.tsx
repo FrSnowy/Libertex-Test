@@ -1,13 +1,12 @@
 import React from 'react';
 import RadioGroup from 'components/RadioGroup';
 import WithLabel from 'components/WithLabel';
-import { FormContext } from 'contexts/Form';
+import { FormContext, LimitT } from 'contexts/Form';
 
 const LimitType = () => {
-  const { limitType, set } = React.useContext(FormContext);
-  const { limitType: setLimitType } = set;
+  const { limitType, setLimitType } = React.useContext(FormContext);
 
-  const onChangeHandler = React.useCallback((v: string) => setLimitType(v as '%' | '$'), [setLimitType]);
+  const onChangeHandler = React.useCallback((v: string) => setLimitType(v as LimitT), [setLimitType]);
 
   return React.useMemo(() => (
     <WithLabel label='Ограничения в'>
