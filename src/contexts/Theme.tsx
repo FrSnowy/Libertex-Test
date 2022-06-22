@@ -14,7 +14,11 @@ export const theme = {
       main: '#c0c2c4',
       disabled: '#efefef',
     },
-    controllerBg: 'linear-gradient(90deg, #f0f2f4, #fff)',
+    controllers: {
+      self: '#fff',
+      input: '#fff',
+      other: 'linear-gradient(90deg, #f0f2f4, #fff)',
+    },
     error: '#f26666',
     success: '#53a642',
   },

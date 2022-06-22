@@ -16,7 +16,7 @@ export const registerInvestment = async (data: RegisterInvestmentData) => {
     TARGET_URL, {
       method: 'POST',
       mode: 'no-cors',
-      credentials: 'include',
+      credentials: 'omit',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -24,5 +24,9 @@ export const registerInvestment = async (data: RegisterInvestmentData) => {
     }
   );
 
-  return await response.json();
+  try {
+    return await response.json();
+  } catch {
+    return {};
+  }
 }

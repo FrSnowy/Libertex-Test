@@ -7,28 +7,30 @@ import Limit from 'features/Limit';
 import LimitType from 'features/LimitType';
 import { FormContext } from 'contexts/Form';
 import SendButton from 'features/SendButton';
+import Tooltip from 'components/Tooltip';
 
 const App = () => {
-  const { takeProfit, stopLoss } = React.useContext(FormContext);
+  const [sumRef, setSumRef] = React.useState<HTMLElement>();
+  const { takeProfit, stopLoss, setFormRef } = React.useContext(FormContext);
 
   return (
-    <Elements.Wrapper>
-      <InvestSum />
-      <Multiplicator />
-      <Spoiler title='Ограничить прибыль и убыток'>
-        <LimitType />
-        <Limit limit={takeProfit}>
-          Прибыль
-        </Limit>
-        <Limit limit={stopLoss}>
-          Убыток
-        </Limit>
-      </Spoiler>
-      <Elements.ButtonsWrapper>
-        <SendButton direction='reduction' />
-        <SendButton direction='growth' />
-      </Elements.ButtonsWrapper>
-    </Elements.Wrapper>
+    <Elements.Container ref={r => setFormRef(r)}>
+      <Elements.Title>Инвестировать сейчас</Elements.Title>
+      <Elements.Content>
+        <Tooltip assign={sumRef} verticalPosition='under'>ПРИВЕТ</Tooltip>
+        <InvestSum ref={r => setSumRef(r as HTMLElement)}/>
+        <Multiplicator />
+        <Spoiler title='Ограничить прибыль и убыток'>
+          <LimitType />
+          <Limit limit={takeProfit}>Прибыль</Limit>
+          <Limit limit={stopLoss}>Убыток</Limit>
+        </Spoiler>
+        <Elements.Buttons>
+          <SendButton direction='reduction' />
+          <SendButton direction='growth' />
+        </Elements.Buttons>
+      </Elements.Content>
+    </Elements.Container>
   )
 }
 

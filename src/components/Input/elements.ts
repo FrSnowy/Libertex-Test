@@ -5,7 +5,10 @@ export const Presymbol = styled.span`
   padding: 4px 4px 4px 8px;
   display: flex;
   align-items: center;
-  color: ${p => p.theme.colors.border.main};
+  ${p => css`
+    color: ${p => p.theme.colors.border.main};
+    background-color: ${p.theme.colors.controllers.input};
+  `};
 `;
 
 export const Input = styled.input`
@@ -16,18 +19,21 @@ export const Input = styled.input`
   outline: 0;
   text-align: right;
   padding: 4px 8px 4px 0;
-  color: ${p => p.theme.colors.text.main};
+  ${p => css`
+    color: ${p.theme.colors.text.main};
+    background-color: ${p.theme.colors.controllers.input};
+  `};
 `;
 
 export const Wrapper = styled.div<{ disabled?: boolean }>`
   display: flex;
   max-height: 32px;
   overflow: hidden;
-  pointer-events: none;
   border-radius: 4px;
   border: ${p => p.theme.border(p.theme.colors.border.main)};
 
   ${p => p.disabled && css`
+    pointer-events: none;
     border: ${p.theme.border(p.theme.colors.border.disabled)};
 
     ${Presymbol} {

@@ -12,7 +12,7 @@ type InputProps = Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'as' | 'onChan
   disabled?: boolean,
 };  
 
-const Input: React.FC<InputProps> = ({
+const Input = React.forwardRef<HTMLDivElement, InputProps>(({
   pre,
   format,
   value: outerValue = 0,
@@ -21,8 +21,8 @@ const Input: React.FC<InputProps> = ({
   withArrowController,
   disabled,
   ...rest
-}) => {
-  const ref = React.useRef<HTMLInputElement>(null);
+}, forwardedRef) => {
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const [value, setValue] = React.useState<string>('');
   const [position, setPosition] = React.useState<number | null>(null);
 
@@ -50,8 +50,8 @@ const Input: React.FC<InputProps> = ({
   }
 
   React.useEffect(() => {
-    if (!ref?.current) return;
-    ref.current.selectionEnd = position;
+    if (!inputRef?.current) return;
+    inputRef.current.selectionEnd = position;
   }, [position]);
 
   const preView = React.useMemo(() => (
@@ -59,12 +59,12 @@ const Input: React.FC<InputProps> = ({
   ), [pre]);
 
   return (
-    <Elements.Wrapper onClick={() => ref.current?.focus()} disabled={disabled}>
+    <Elements.Wrapper onClick={() => inputRef.current?.focus()} disabled={disabled} ref={forwardedRef}>
       {preView}
       <Elements.Input
         contentEditable={!disabled}
         value={disabled ? '' : value}
-        ref={ref}
+        ref={inputRef}
         onChange={onInputValueChanged}
         {...rest}
       />
@@ -79,7 +79,7 @@ const Input: React.FC<InputProps> = ({
       />
     </Elements.Wrapper>
   )
-};
+});
 
 export * as InputFormat from './formats';
 export default Input;

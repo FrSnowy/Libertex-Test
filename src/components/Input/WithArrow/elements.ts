@@ -20,7 +20,7 @@ export const ArrowBlock = styled.div`
 
   ${p => css`
     color: ${p.theme.colors.text.main};
-    background: ${p.theme.colors.controllerBg};
+    background: ${p.theme.colors.controllers.other};
     &:not(:last-of-type) {
       border-bottom: ${p => p.theme.border(p.theme.colors.border.main)}
     }

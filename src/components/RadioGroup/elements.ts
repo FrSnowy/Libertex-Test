@@ -21,7 +21,7 @@ export const RadioBtn = styled.div<{ checked?: boolean }>`
   left: 0;
 
   ${p => css`
-    background: ${p.theme.colors.controllerBg};
+    background: ${p.theme.colors.controllers.other};
     border: ${p.theme.border(p.theme.colors.border.main)};
 
     & + span {

@@ -13,6 +13,8 @@ export type LimitType = {
 };
 
 export type FormT = {
+  formRef: HTMLDivElement | null,
+  setFormRef:  (v: HTMLDivElement | null) => void,
   sumInv: number,
   setSumInv: (v: number) => void,
   mult: number,
@@ -27,6 +29,8 @@ export type FormT = {
 const defaultFn = () => console.error('Form provider was not founded');
 
 const defaultContextValue: FormT = {
+  formRef: null,
+  setFormRef: defaultFn,
   sumInv: 5000,
   setSumInv: defaultFn,
   mult: 40,
@@ -53,6 +57,7 @@ const defaultContextValue: FormT = {
 export const FormContext = React.createContext<FormT>(defaultContextValue);
 
 const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [formRef, setFormRef] = React.useState<HTMLDivElement | null>(null);
   const [sumInv, setSumInv] = React.useState<number>(defaultContextValue.sumInv);
   const [mult, setMult] = React.useState<number>(defaultContextValue.mult);
   const [limitType, setLimitType] = React.useState<LimitT>(defaultContextValue.limitType);
@@ -110,6 +115,8 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   }, [sumInv, mult, isTakeProfitActive, isStopLossActive, takeProfitValue, stopLossValue]);
 
   const value: FormT = {
+    formRef,
+    setFormRef,
     sumInv,
     setSumInv,
     mult,
