@@ -9,20 +9,20 @@ export type TooltipProps = {
   assign?: HTMLElement | null,
   verticalPosition?: 'over' | 'under',
   children?: React.ReactNode,
+  withMaxWidth?: boolean;
 }
 
-const Tooltip: React.FC<TooltipProps> = ({ assign, verticalPosition = 'over', children }) => {
+const Tooltip: React.FC<TooltipProps> = ({ assign, verticalPosition = 'over', children, withMaxWidth = true }) => {
   const { formRef } = React.useContext(FormContext);
+
+  const [selfEl, setSelfEl] = React.useState<HTMLDivElement | null>(null);
   const [minWidth, setMinWidth] = React.useState<number | null>(null);
   const [maxWidth, setMaxWidth] = React.useState<number | null>(null);
   const [top, setTop] = React.useState<number>(0);
   const [left, setLeft] = React.useState<number>(0);
 
-  const targetEl = React.useRef<HTMLElement>();
-  const [selfEl, setSelfEl] = React.useState<HTMLDivElement | null>(null);
-
   const handleResize = React.useCallback((el?: HTMLElement) => {
-    if (!el) {
+    if (!el || !assign) {
       setMinWidth(null);
       setMaxWidth(null);
       setTop(0);
@@ -31,12 +31,13 @@ const Tooltip: React.FC<TooltipProps> = ({ assign, verticalPosition = 'over', ch
     }
 
     const elRect = el.getBoundingClientRect();
+    const assignRect = assign?.getBoundingClientRect();
     const formElRect = formRef?.getBoundingClientRect();
     const selfElRect = selfEl?.getBoundingClientRect();
 
     setMinWidth(elRect.width);
     setLeft(elRect.left);
-    formElRect && selfElRect && setMaxWidth(selfElRect.width - (selfElRect.right - formElRect.right) - 8);
+    withMaxWidth && formElRect && assignRect && setMaxWidth(formElRect.right - assignRect.left - 8);
 
     switch (verticalPosition) {
       case 'under':
@@ -47,12 +48,11 @@ const Tooltip: React.FC<TooltipProps> = ({ assign, verticalPosition = 'over', ch
         setTop(elRect.top - (selfElRect?.height || 0));
         break;
     }
-  }, [verticalPosition, selfEl, formRef]);
+  }, [verticalPosition, selfEl, formRef, assign, withMaxWidth]);
 
   React.useLayoutEffect(() => {
     if (!assign || !formRef || !selfEl) return;
-    targetEl.current = assign;
-    const onResize = () => handleResize(targetEl.current);
+    const onResize = () => handleResize(assign);
     onResize();
     const throttledHandler = throttle(32, onResize);
     const resizeObserver = new ResizeObserver(throttledHandler);
@@ -69,7 +69,14 @@ const Tooltip: React.FC<TooltipProps> = ({ assign, verticalPosition = 'over', ch
   //! will generate new style and put it in dom every time we resizing the window.
   //! It can potentially effect the page productivity. If we just putting styles
   //! inline it will be a way faster.
-  const style = React.useMemo(() => ({ minWidth: minWidth || 'auto', maxWidth: maxWidth || 'auto', top, left }), [minWidth, maxWidth, top, left]);
+  const style = React.useMemo(() => ({
+    top,
+    left,
+    minWidth: minWidth || 'auto',
+    maxWidth: maxWidth || 'auto',
+  }), [minWidth, maxWidth, top, left]);
+
+  if (!assign) return null;
 
   return ReactDOM.createPortal(
     <Elements.TooltipContainer style={style} ref={r => setSelfEl(r)}>

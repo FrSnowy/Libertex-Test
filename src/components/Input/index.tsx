@@ -31,11 +31,6 @@ const Input: React.FC<InputProps> = ({
   const [value, setValue] = React.useState<string>('');
   const [position, setPosition] = React.useState<number | null>(null);
 
-  React.useLayoutEffect(() => {
-    const initValue = format ? format.to(outerValue) : `${outerValue}`;
-    setValue(initValue);
-  }, [outerValue, format]);
-
   const getFormattedValue = (e: React.ChangeEvent<HTMLInputElement>): string => {
     if (!format) return e.target.value;
     const formattedValue = format.to(e.target.value);
@@ -58,6 +53,11 @@ const Input: React.FC<InputProps> = ({
     if (!inputRef?.current) return;
     inputRef.current.selectionEnd = position;
   }, [position]);
+
+  React.useLayoutEffect(() => {
+    const initValue = format ? format.to(outerValue) : `${outerValue}`;
+    setValue(initValue);
+  }, [outerValue, format]);
 
   const preView = React.useMemo(() => (
     pre ? <Elements.Presymbol>{pre}</Elements.Presymbol> : null
