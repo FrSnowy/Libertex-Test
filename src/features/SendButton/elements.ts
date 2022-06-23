@@ -23,7 +23,7 @@ export const ButtonWrapper = styled.div<{ direction: Direction }>`
     }
 
     ${p => css`
-      background-color: ${p.direction === 'growth' ? p.theme.colors.success : p.theme.colors.error};
+      background-color: ${p.direction === 'growth' ? p.theme.colors.success.light : p.theme.colors.error.light};
       color: ${p.theme.colors.text.contrastLight};
 
       &:hover {

@@ -1,27 +1,32 @@
+import Error from 'components/Error';
 import React from 'react';
 import * as Elements from './elements';
 import { FormatFnT } from './formats';
 import WithArrow from './WithArrow';
 
 type InputProps = Omit<React.HTMLProps<HTMLInputElement>, 'ref' | 'as' | 'onChange' | 'type' | 'defaultValue'> & {
-  pre?: string | JSX.Element | null,
+  pre?: React.ReactNode,
   format?: ReturnType<FormatFnT>,
   onChange?: (v: string) => void,
   value?: number,
   withArrowController?: boolean,
   disabled?: boolean,
-};  
+  error?: React.ReactNode;
+  errorTarget?: HTMLElement | null,
+};
 
-const Input = React.forwardRef<HTMLDivElement, InputProps>(({
+const Input: React.FC<InputProps> = ({
   pre,
   format,
   value: outerValue = 0,
   onChange,
   label,
+  error,
   withArrowController,
   disabled,
   ...rest
-}, forwardedRef) => {
+}) => {
+  const [wrapperRef, setWrapperRef] = React.useState<HTMLDivElement | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [value, setValue] = React.useState<string>('');
   const [position, setPosition] = React.useState<number | null>(null);
@@ -58,13 +63,23 @@ const Input = React.forwardRef<HTMLDivElement, InputProps>(({
     pre ? <Elements.Presymbol>{pre}</Elements.Presymbol> : null
   ), [pre]);
 
+  const errorView = React.useMemo(() => {
+    if (!wrapperRef || !error) return null;
+    return (
+      <Error assign={wrapperRef}>
+        {error}
+      </Error>
+    );
+  }, [wrapperRef, error]);
+
   return (
-    <Elements.Wrapper onClick={() => inputRef.current?.focus()} disabled={disabled} ref={forwardedRef}>
+    <Elements.Wrapper onClick={() => inputRef.current?.focus()} disabled={disabled} error={!!error} ref={r => setWrapperRef(r)}>
       {preView}
       <Elements.Input
         contentEditable={!disabled}
         value={disabled ? '' : value}
         ref={inputRef}
+        readOnly={!!disabled}
         onChange={onInputValueChanged}
         {...rest}
       />
@@ -77,9 +92,10 @@ const Input = React.forwardRef<HTMLDivElement, InputProps>(({
         }}
         enable={!!withArrowController}
       />
+      {errorView}
     </Elements.Wrapper>
   )
-});
+};
 
 export * as InputFormat from './formats';
 export default Input;

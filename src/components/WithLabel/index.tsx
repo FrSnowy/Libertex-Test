@@ -6,17 +6,17 @@ type WithLabelProps = {
   children: React.ReactNode;
 }
 
-const WithLabel: React.FC<WithLabelProps> = ({ label, children }) => {
+const WithLabel = React.forwardRef<HTMLDivElement, WithLabelProps>(({ label, children }, forwardRef) => {
   return (
     <Elements.WithLabelWrapper>
       <Elements.Label>
         {label}
       </Elements.Label>
-      <Elements.ChildrenWrapper>
+      <Elements.ChildrenWrapper ref={forwardRef}>
         {children}
       </Elements.ChildrenWrapper>
     </Elements.WithLabelWrapper>
   );
-};
+});
 
 export default WithLabel;

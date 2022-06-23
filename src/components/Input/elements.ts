@@ -25,7 +25,7 @@ export const Input = styled.input`
   `};
 `;
 
-export const Wrapper = styled.div<{ disabled?: boolean }>`
+export const Wrapper = styled.div<{ disabled?: boolean, error?: boolean }>`
   display: flex;
   max-height: 32px;
   overflow: hidden;
@@ -51,5 +51,9 @@ export const Wrapper = styled.div<{ disabled?: boolean }>`
         border-bottom: ${p.theme.border(p.theme.colors.border.disabled)};
       } 
     }
+  `};
+
+  ${p => p.error && !p.disabled && css`
+    border: ${p.theme.border(p.theme.colors.error.main)};
   `};
 `;

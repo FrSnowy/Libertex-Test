@@ -2,14 +2,15 @@ import React from 'react';
 import * as FormAPI from 'api/Form';
 import { Direction } from 'features/SendButton';
 
-export type LimitT = '%' | '$';
+export type LimitCurrency = '%' | '$';
 
 export type LimitType = {
   active: boolean,
+  type: 'takeProfit' | 'stopLoss',
   percent: number,
   value: number,
   setActive: (v: boolean) => void,
-  setValue: (t: LimitT, v: number) => void,
+  setValue: (t: LimitCurrency, v: number) => void,
 };
 
 export type FormT = {
@@ -19,8 +20,8 @@ export type FormT = {
   setSumInv: (v: number) => void,
   mult: number,
   setMult: (v: number) => void,
-  limitType: LimitT,
-  setLimitType: (type: LimitT) => void,
+  limitType: LimitCurrency,
+  setLimitType: (type: LimitCurrency) => void,
   takeProfit: LimitType,
   stopLoss: LimitType,
   registerInvestment: (direction: Direction) => void,
@@ -39,6 +40,7 @@ const defaultContextValue: FormT = {
   setLimitType: defaultFn,
   takeProfit: {
     active: false,
+    type: 'takeProfit',
     percent: 30,
     value: 1500,
     setActive: defaultFn,
@@ -46,6 +48,7 @@ const defaultContextValue: FormT = {
   },
   stopLoss: {
     active: false,
+    type: 'stopLoss',
     percent: 30,
     value: 1500,
     setActive: defaultFn,
@@ -60,7 +63,7 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   const [formRef, setFormRef] = React.useState<HTMLDivElement | null>(null);
   const [sumInv, setSumInv] = React.useState<number>(defaultContextValue.sumInv);
   const [mult, setMult] = React.useState<number>(defaultContextValue.mult);
-  const [limitType, setLimitType] = React.useState<LimitT>(defaultContextValue.limitType);
+  const [limitType, setLimitType] = React.useState<LimitCurrency>(defaultContextValue.limitType);
   const [isTakeProfitActive, setIsTakeProfitActive] = React.useState<boolean>(defaultContextValue.takeProfit.active);
   const [takeProfitPercent, setTakeProfitPercent] = React.useState<number>(defaultContextValue.takeProfit.percent);
   const [takeProfitValue, setTakeProfitValue] = React.useState<number>(defaultContextValue.takeProfit.value);
@@ -91,7 +94,7 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     const setValue = limitType === 'take-profit' ? setTakeProfitValue : setStopLossValue;
     const value = limitType === 'take-profit' ? takeProfitValue : stopLossValue;
 
-    return (t: LimitT, v: number) => {
+    return (t: LimitCurrency, v: number) => {
       switch (t) {
         case '%':
           setPercent(v);
@@ -125,6 +128,7 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     setLimitType,
     registerInvestment,
     takeProfit: {
+      type: defaultContextValue.takeProfit.type,
       active: isTakeProfitActive,
       value: takeProfitValue,
       percent: takeProfitPercent,
@@ -132,6 +136,7 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       setValue: setLimit('take-profit'),
     },
     stopLoss: {
+      type: defaultContextValue.stopLoss.type,
       active: isStopLossActive,
       value: stopLossValue,
       percent: stopLossPercent,
