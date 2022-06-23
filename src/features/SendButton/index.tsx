@@ -2,7 +2,8 @@ import Button from 'components/Button';
 import React from 'react';
 import * as Elements  from './elements';
 import { ReactComponent as ArrowLongTop } from 'assets/arrow-long-bottom.svg';
-import { FormController, FormContext } from 'contexts/Form';
+import { FormController, FormContext, FormT } from 'contexts/Form';
+import { ErrorsContext } from 'contexts/Errors';
 
 export type Direction = 'growth' | 'reduction';
 
@@ -16,11 +17,15 @@ const BUTTON_NAME: Record<Direction, string> = {
 }
 
 const SendButton: React.FC<SendButtonProps> = ({ direction }) => {
-  const { sumInv, mult, takeProfit, stopLoss } = React.useContext(FormContext);
+  const { makeShakeOneTime } = React.useContext(ErrorsContext);
+  const { sumInv, mult, takeProfit, stopLoss, limitType } = React.useContext(FormContext);
 
   const registerInvestment = React.useCallback(async () => {
+    const data: FormT.RegisterInvestmentProps = { sumInv, mult, takeProfit, stopLoss };
+    const isAllValid = FormController.isAllValid(data, limitType);
+    if (!isAllValid) return makeShakeOneTime();
     await FormController.registerInvestment(direction, { sumInv, mult, takeProfit, stopLoss });
-  }, [direction, sumInv, mult, takeProfit, stopLoss]);
+  }, [direction, sumInv, mult, takeProfit, stopLoss, limitType, makeShakeOneTime]);
 
   const ArrowView = React.useMemo(() => {
     const transform = `rotate(${direction === 'growth'  ? '180deg' : 0})`;

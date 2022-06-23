@@ -1,7 +1,7 @@
 import React from 'react';
 import Input, { InputFormat } from 'components/Input';
 import WithLabel from 'components/WithLabel';
-import { FormContext, FormController } from 'contexts/Form';
+import { FormContext, FormController, FormC } from 'contexts/Form';
 
 const InvestSum = () => {
   const { sumInv, setSumInv } = React.useContext(FormContext);
@@ -13,7 +13,7 @@ const InvestSum = () => {
 
   const errorView = React.useMemo(() => {
     if (!!FormController.sumInvValidate(sumInv)) return null;
-    return <span>Минимальная сумма инвестиции ${InputFormat.number().to(FormController.MIN_SUM_INV)}</span>
+    return <span>Минимальная сумма инвестиции ${InputFormat.number().to(FormC.MIN_SUM_INV)}</span>
   }, [sumInv]);
 
   return React.useMemo(() => (
