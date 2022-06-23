@@ -1,18 +1,16 @@
 import React from 'react';
 import Input, { InputFormat } from 'components/Input';
 import WithLabel from 'components/WithLabel';
-import { FormContext, LimitType } from 'contexts/Form';
+import { FormContext, FormController, FormT } from 'contexts/Form';
 import Check from 'components/Check';
-import { FormValidatorContext, MIN_LIMIT_PERCENT, STOP_LOSS_MAX_PERCENT } from 'contexts/FormValidator';
 
 type LimitProps = {
-  limit: LimitType,
+  limit: FormT.LimitType,
   children: string,
 }
 
 const Limit: React.FC<LimitProps> = ({ limit, children }) => {
   const { limitType, sumInv } = React.useContext(FormContext);
-  const { checkLimitValid } = React.useContext(FormValidatorContext);
   const { active, value, percent, setActive, setValue } = limit;
 
   const checkHandler = React.useCallback((v: boolean) => setActive(v), [setActive]);
@@ -22,22 +20,22 @@ const Limit: React.FC<LimitProps> = ({ limit, children }) => {
   }, [limitType, setValue]);
 
   const errorView = React.useMemo(() => {
-    const isOK = checkLimitValid(limit);
+    const isOK = FormController.limitValidate(limit);
     if (isOK && typeof isOK !== 'string') return null;
     if (isOK === 'not-enough') {
-      if (limitType === '%') return `Не может быть меньше ${MIN_LIMIT_PERCENT}%`;
+      if (limitType === '%') return `Не может быть меньше ${FormController.MIN_LIMIT_PERCENT}%`;
       if (limitType === '$') return (
-        `Не может быть меньше $${InputFormat.number().to(sumInv * MIN_LIMIT_PERCENT / 100)}`
+        `Не может быть меньше $${InputFormat.number().to(sumInv * FormController.MIN_LIMIT_PERCENT / 100)}`
       );
       return null;
     }
     if (isOK === 'too-much') {
-      if (limitType === '%') return `Не может быть больше ${STOP_LOSS_MAX_PERCENT}%`;
+      if (limitType === '%') return `Не может быть больше ${FormController.STOP_LOSS_MAX_PERCENT}%`;
       if (limitType === '$') return `Не может быть больше $${InputFormat.number().to(sumInv)}`;
       return null;
     }
     return null;
-  }, [limit, limitType, checkLimitValid, sumInv]);
+  }, [limit, limitType, sumInv]);
 
   const checkBox = React.useMemo(() => (
     <Check checked={active} onChange={checkHandler}>

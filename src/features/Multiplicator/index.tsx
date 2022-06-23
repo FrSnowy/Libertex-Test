@@ -3,21 +3,19 @@ import * as Elements  from './elements';
 import Input, { InputFormat } from 'components/Input';
 import { ReactComponent as MultipleIcon } from 'assets/multiple.svg';
 import WithLabel from 'components/WithLabel';
-import { FormContext } from 'contexts/Form';
-import { FormValidatorContext } from 'contexts/FormValidator';
+import { FormContext, FormController } from 'contexts/Form';
 
 const Multiplicator: React.FC = () => {
   const { sumInv, mult, setMult } = React.useContext(FormContext);
-  const { multValid } = React.useContext(FormValidatorContext);
 
   const onChangeHandler = React.useCallback((v: string) => {
     setMult(parseInt(v, 10) || 0);
   }, [setMult]);
 
   const errorView = React.useMemo(() => {
-    if (!!multValid) return null;
+    if (!!FormController.multValidate(mult)) return null;
     return 'Неверное значение мультипликатора'
-  }, [multValid]);
+  }, [mult]);
 
   return React.useMemo(() => (
     <WithLabel label='Мультипликатор'>

@@ -1,63 +1,6 @@
 import React from 'react';
-import * as FormAPI from 'api/Form';
-import { Direction } from 'features/SendButton';
-
-export type LimitCurrency = '%' | '$';
-
-export type LimitType = {
-  active: boolean,
-  type: 'takeProfit' | 'stopLoss',
-  percent: number,
-  value: number,
-  setActive: (v: boolean) => void,
-  setValue: (t: LimitCurrency, v: number) => void,
-};
-
-export type FormT = {
-  formRef: HTMLDivElement | null,
-  setFormRef:  (v: HTMLDivElement | null) => void,
-  sumInv: number,
-  setSumInv: (v: number) => void,
-  mult: number,
-  setMult: (v: number) => void,
-  limitType: LimitCurrency,
-  setLimitType: (type: LimitCurrency) => void,
-  takeProfit: LimitType,
-  stopLoss: LimitType,
-  registerInvestment: (direction: Direction) => void,
-}
-
-const defaultFn = () => console.error('Form provider was not founded');
-
-const defaultContextValue: FormT = {
-  formRef: null,
-  setFormRef: defaultFn,
-  sumInv: 5000,
-  setSumInv: defaultFn,
-  mult: 40,
-  setMult: defaultFn,
-  limitType: '%',
-  setLimitType: defaultFn,
-  takeProfit: {
-    active: false,
-    type: 'takeProfit',
-    percent: 30,
-    value: 1500,
-    setActive: defaultFn,
-    setValue: defaultFn,
-  },
-  stopLoss: {
-    active: false,
-    type: 'stopLoss',
-    percent: 30,
-    value: 1500,
-    setActive: defaultFn,
-    setValue: defaultFn,
-  },
-  registerInvestment: defaultFn,
-}
-
-export const FormContext = React.createContext<FormT>(defaultContextValue);
+import FormContext, { defaultContextValue } from './context';
+import { FormT, LimitCurrency } from './types';
 
 const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [formRef, setFormRef] = React.useState<HTMLDivElement | null>(null);
@@ -109,14 +52,6 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     }
   }, [sumInv, takeProfitValue, stopLossValue]);
 
-  const registerInvestment = React.useCallback(async (direction: Direction) => {
-    const formattedData: FormAPI.RegisterInvestmentData = { sumInv, mult, direction }
-    if (isTakeProfitActive) formattedData.takeProfit = takeProfitValue;
-    if (isStopLossActive) formattedData.stopLoss = stopLossValue;
-
-    return await FormAPI.registerInvestment(formattedData);
-  }, [sumInv, mult, isTakeProfitActive, isStopLossActive, takeProfitValue, stopLossValue]);
-
   const value: FormT = {
     formRef,
     setFormRef,
@@ -126,7 +61,6 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     setMult,
     limitType,
     setLimitType,
-    registerInvestment,
     takeProfit: {
       type: defaultContextValue.takeProfit.type,
       active: isTakeProfitActive,

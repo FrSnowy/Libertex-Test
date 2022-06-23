@@ -1,12 +1,10 @@
 import React from 'react';
 import Input, { InputFormat } from 'components/Input';
 import WithLabel from 'components/WithLabel';
-import { FormContext } from 'contexts/Form';
-import { FormValidatorContext, MIN_SUM_INV } from 'contexts/FormValidator';
+import { FormContext, FormController } from 'contexts/Form';
 
 const InvestSum = () => {
   const { sumInv, setSumInv } = React.useContext(FormContext);
-  const { sumInvValid } = React.useContext(FormValidatorContext);
 
   const onChangeHandler = React.useCallback((v: string): void => {
     const sumInv = parseInt(v, 10) || 0;
@@ -14,9 +12,9 @@ const InvestSum = () => {
   }, [setSumInv]);
 
   const errorView = React.useMemo(() => {
-    if (!!sumInvValid) return null;
-    return <span>Минимальная сумма инвестиции ${InputFormat.number().to(MIN_SUM_INV)}</span>
-  }, [sumInvValid]);
+    if (!!FormController.sumInvValidate(sumInv)) return null;
+    return <span>Минимальная сумма инвестиции ${InputFormat.number().to(FormController.MIN_SUM_INV)}</span>
+  }, [sumInv]);
 
   return React.useMemo(() => (
     <React.Fragment>

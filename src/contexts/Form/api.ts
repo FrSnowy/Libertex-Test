@@ -1,14 +1,6 @@
-import { Direction } from "features/SendButton"
+import { RegisterInvestmentDataProps } from "./types";
 
-export type RegisterInvestmentData = {
-  sumInv: number,
-  mult: number,
-  takeProfit?: number,
-  stopLoss?: number,
-  direction: Direction,
-};
-
-export const registerInvestment = async (data: RegisterInvestmentData) => {
+export const registerInvestment = async (data: RegisterInvestmentDataProps) => {
   //Using this public postman echo API because there's no API provided within the task
   const TARGET_URL = 'https://postman-echo.com/post';
 
