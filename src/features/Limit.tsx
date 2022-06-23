@@ -20,7 +20,7 @@ const Limit: React.FC<LimitProps> = ({ limit, children }) => {
   }, [limitType, setValue]);
 
   const errorView = React.useMemo(() => {
-    const isOK = FormController.limitValidate(limit);
+    const isOK = FormController.limitValidate(limit, sumInv, limitType);
     if (isOK && typeof isOK !== 'string') return null;
     if (isOK === 'not-enough') {
       if (limitType === '%') return `Не может быть меньше ${FormController.MIN_LIMIT_PERCENT}%`;

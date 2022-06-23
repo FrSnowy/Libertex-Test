@@ -19,10 +19,12 @@ export const multValidate = (v: number): boolean => {
   return (v >= MIN_MULT && v <= MAX_MULT);
 }
 
-export const limitValidate = (limit: FormT.LimitType): 'not-enough' | 'too-much' | true => {
+export const limitValidate = (limit: FormT.LimitType, sumInv: number, limitType: FormT.LimitCurrency): 'not-enough' | 'too-much' | true => {
   if (!limit.active) return true;
-  if (limit.percent < MIN_LIMIT_PERCENT) return 'not-enough';
-  if (limit.type === 'stopLoss' && limit.percent > STOP_LOSS_MAX_PERCENT) return 'too-much';
+  if (limitType === '%' && limit.percent < MIN_LIMIT_PERCENT) return 'not-enough';
+  if (limitType === '$' && limit.value < sumInv * (MIN_LIMIT_PERCENT / 100)) return 'not-enough';
+  if (limitType === '%' && limit.type === 'stopLoss' && limit.percent > STOP_LOSS_MAX_PERCENT) return 'too-much';
+  if (limitType === '$' && limit.type === 'stopLoss' && limit.value > sumInv) return 'too-much';
   return true;
 }
 
