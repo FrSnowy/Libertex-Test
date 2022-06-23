@@ -4,12 +4,15 @@ import Input, { InputFormat } from 'components/Input';
 import { ReactComponent as MultipleIcon } from 'assets/multiple.svg';
 import WithLabel from 'components/WithLabel';
 import { FormContext, FormController } from 'contexts/Form';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+import MultiplicatorSlider from './Slider';
 
 const Multiplicator: React.FC = () => {
   const { sumInv, mult, setMult } = React.useContext(FormContext);
 
-  const onChangeHandler = React.useCallback((v: string) => {
-    setMult(parseInt(v, 10) || 0);
+  const onChangeHandler = React.useCallback((v: string | number) => {
+    setMult(typeof v === 'string' ? parseInt(v, 10) || 0 : v);
   }, [setMult]);
 
   const errorView = React.useMemo(() => {
@@ -18,6 +21,7 @@ const Multiplicator: React.FC = () => {
   }, [mult]);
 
   return React.useMemo(() => (
+    <>
     <WithLabel label='Мультипликатор'>
       <Elements.InputWrapper>
         <Input
@@ -32,6 +36,8 @@ const Multiplicator: React.FC = () => {
         = ${InputFormat.number().to(sumInv * mult)}
       </Elements.FinalSum>
     </WithLabel>
+    <MultiplicatorSlider onChange={onChangeHandler} />
+    </>
   ), [sumInv, mult, onChangeHandler, errorView])
 }
 

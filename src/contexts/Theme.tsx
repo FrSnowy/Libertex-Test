@@ -18,6 +18,10 @@ export const theme = {
       self: '#fff',
       input: '#fff',
       other: 'linear-gradient(90deg, #f0f2f4, #fff)',
+      slider: {
+        track: '#909294',
+        control: '#7e98e5',
+      },
     },
     error: {
       light: '#f26666',
