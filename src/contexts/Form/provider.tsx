@@ -1,6 +1,6 @@
 import React from 'react';
 import FormContext, { defaultContextValue } from './context';
-import { FormT, LimitCurrency } from './types';
+import { FormT, LimitCurrency, LimitNames } from './types';
 
 const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [formRef, setFormRef] = React.useState<HTMLDivElement | null>(null);
@@ -32,10 +32,10 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
     }
   }, [sumInv, limitType, takeProfitValue, takeProfitPercent, stopLossValue, stopLossPercent]);
 
-  const setLimit = React.useCallback((limitType: 'take-profit' | 'stop-loss') => {
-    const setPercent = limitType === 'take-profit' ? setTakeProfitPercent : setStopLossPercent;
-    const setValue = limitType === 'take-profit' ? setTakeProfitValue : setStopLossValue;
-    const value = limitType === 'take-profit' ? takeProfitValue : stopLossValue;
+  const setLimit = React.useCallback((limitType: LimitNames) => {
+    const setPercent = limitType === 'takeProfit' ? setTakeProfitPercent : setStopLossPercent;
+    const setValue = limitType === 'takeProfit' ? setTakeProfitValue : setStopLossValue;
+    const value = limitType === 'takeProfit' ? takeProfitValue : stopLossValue;
 
     return (t: LimitCurrency, v: number) => {
       switch (t) {
@@ -67,7 +67,7 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       value: takeProfitValue,
       percent: takeProfitPercent,
       setActive: setIsTakeProfitActive,
-      setValue: setLimit('take-profit'),
+      setValue: setLimit(defaultContextValue.takeProfit.type),
     },
     stopLoss: {
       type: defaultContextValue.stopLoss.type,
@@ -75,7 +75,7 @@ const FormProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => 
       value: stopLossValue,
       percent: stopLossPercent,
       setActive: setIsStopLossActive,
-      setValue: setLimit('stop-loss'),
+      setValue: setLimit(defaultContextValue.stopLoss.type),
     },
   };
 

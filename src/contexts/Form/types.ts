@@ -2,9 +2,11 @@ import { Direction } from 'features/SendButton';
 
 export type LimitCurrency = '%' | '$';
 
+export type LimitNames = 'takeProfit' | 'stopLoss';
+
 export type LimitType = {
   active: boolean,
-  type: 'takeProfit' | 'stopLoss',
+  type: LimitNames,
   percent: number,
   value: number,
   setActive: (v: boolean) => void,
