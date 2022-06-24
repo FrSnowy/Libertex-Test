@@ -1,46 +1,27 @@
-# Getting Started with Create React App
+# Libertex Group test
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repo is an implementation of a test from the Libtertex Group sent to me as part of my technical interview.
 
-## Available Scripts
+## How to run
 
-In the project directory, you can run:
+```js
+yarn && yarn start
+```
 
-### `npm start`
+## Used stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Typescript
+- React for view and component realisation
+- React Context API as a native state manager
+- Styled-components for theming and generating dynamically reactive styled components
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## PoC
 
-### `npm test`
+![image](https://user-images.githubusercontent.com/29811274/175721802-484c346e-cb76-4c1d-a739-02ad9f926cc4.png)
+![image](https://user-images.githubusercontent.com/29811274/175721900-ac3a59a9-c97a-4a4d-85a7-2b6a68de6eb7.png)
+![image](https://user-images.githubusercontent.com/29811274/175722017-c48be985-6f06-4649-890a-5ffae294d447.png)
+![image](https://user-images.githubusercontent.com/29811274/175731352-f2cdd52a-d705-43e8-8db5-6c66c9dd2786.png)
+![image](https://user-images.githubusercontent.com/29811274/175722627-3b698bfa-9a6b-4f2b-81e6-345826fea89f.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+![image](https://user-images.githubusercontent.com/29811274/175736043-585e68cf-bab6-42b5-8fe5-d7bbec333f96.png)
+![image](https://user-images.githubusercontent.com/29811274/175736294-3334ad97-6230-4744-93f1-513f3d608cad.png)
