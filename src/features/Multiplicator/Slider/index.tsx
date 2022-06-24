@@ -11,11 +11,14 @@ const dotMap = {
 
 export type SliderProps = {
   value?: number,
+  onDragStart?: () => void,
+  onDragEnd?: () => void,
   onChange?: (v: number) => void,
 };
 
-const MultiplicatorSlider: React.FC<SliderProps> = ({ value, onChange }) => {
+const MultiplicatorSlider: React.FC<SliderProps> = ({ value, onChange, onDragStart, onDragEnd }) => {
   const [ref, setRef] = React.useState<HTMLDivElement | null>(null);
+  const [innerValue, setInnerValue] = React.useState<number>(value || 1);
 
   React.useEffect(() => {
     if (!ref) return;
@@ -24,17 +27,26 @@ const MultiplicatorSlider: React.FC<SliderProps> = ({ value, onChange }) => {
     const track = slider.querySelector('.rc-slider-track');
     if (!track) return;
     slider.appendChild(track);
-  }, [ref])
+  }, [ref]);
 
-  const onChangeHandler = React.useCallback((v: number | number[]) => {
-    onChange && v <= 40 && onChange(v as number);
-  }, [onChange]);
+  React.useEffect(() => {
+    onChange && innerValue <= 40 && onChange(innerValue);
+  }, [innerValue, onChange]);
 
   return React.useMemo(() => (
     <Elements.SliderWrapper ref={r => setRef(r)}>
-      <Slider min={1} max={40} dots={true} value={value} marks={dotMap} onChange={onChangeHandler}/>
+      <Slider
+        min={1}
+        max={40}
+        dots={true}
+        value={innerValue}
+        marks={dotMap}
+        onChange={v => setInnerValue(v as number)}
+        onBeforeChange={onDragStart}
+        onAfterChange={onDragEnd}
+      />
     </Elements.SliderWrapper>
-  ), [onChangeHandler, value])
+  ), [innerValue, onDragStart, onDragEnd])
 }
 
 export default MultiplicatorSlider;

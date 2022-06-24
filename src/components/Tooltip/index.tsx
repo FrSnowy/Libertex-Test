@@ -10,9 +10,16 @@ export type TooltipProps = {
   verticalPosition?: 'over' | 'under',
   children?: React.ReactNode,
   withMaxWidth?: boolean;
+  stayInParentContainer?: boolean;
 }
 
-const Tooltip: React.FC<TooltipProps> = ({ assign, verticalPosition = 'over', children, withMaxWidth = true }) => {
+const Tooltip: React.FC<TooltipProps> = ({
+  assign,
+  children,
+  verticalPosition = 'over',
+  withMaxWidth = true,
+  stayInParentContainer
+}) => {
   const { formRef } = React.useContext(FormContext);
 
   const [selfEl, setSelfEl] = React.useState<HTMLDivElement | null>(null);
@@ -78,12 +85,17 @@ const Tooltip: React.FC<TooltipProps> = ({ assign, verticalPosition = 'over', ch
 
   if (!assign) return null;
 
-  return ReactDOM.createPortal(
+  const view = (
     <Elements.TooltipContainer style={style} ref={r => setSelfEl(r)}>
       {children}
-    </Elements.TooltipContainer>,
-    document.body,
+    </Elements.TooltipContainer>
+  )
+
+  if (!stayInParentContainer) return (
+    ReactDOM.createPortal(view, document.body)
   );
+
+  return view;
 }
 
 export default Tooltip;

@@ -1,9 +1,16 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export const WithLabelWrapper = styled.div`
-  display: 'flex';
+export const WithLabelWrapper = styled.div<{ zIndex?: number }>`
+  display: flex;
   align-items: center;
   margin-bottom: 8px;
+
+  ${p => p.zIndex && css`
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: ${p.zIndex};
+  `};
 `;
 
 export const Label = styled.label`

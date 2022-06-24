@@ -55,7 +55,9 @@ const Limit: React.FC<LimitProps> = ({ limit, children }) => {
         error={errorView}
       />
     </WithLabel>
-  ), [active, limitType, value, percent, onLimitChangeHandler, checkBox, errorView]);
+    // We dont wont to update view when changing values while input is disabled
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  ), active ? [active, limitType, value, percent, onLimitChangeHandler, checkBox, errorView] : [active, limitType]);
 }
 
 export default Limit;

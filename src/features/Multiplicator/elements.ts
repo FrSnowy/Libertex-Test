@@ -5,6 +5,8 @@ export const FinalSum = styled.span`
   display: inline-flex;
   flex: none;
   color: ${p => p.theme.colors.text.light};
+  position: relative;
+  z-index: 1;
 `;
 
 export const Content = styled.div`

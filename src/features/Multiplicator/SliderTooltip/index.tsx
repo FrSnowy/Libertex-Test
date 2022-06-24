@@ -7,14 +7,14 @@ type SliderTooltipProps = SliderProps & {
   inputRef: HTMLDivElement | null;
 }
 
-const SliderTooltip: React.FC<SliderTooltipProps> = ({ value, onChange, inputRef }) => {
+const SliderTooltip: React.FC<SliderTooltipProps> = ({ inputRef, ...sliderProps }) => {
   return React.useMemo(() => (
-    <Tooltip assign={inputRef} verticalPosition='under'>
+    <Tooltip assign={inputRef} verticalPosition='under' stayInParentContainer>
       <Elements.Container>
-        <Slider value={value} onChange={onChange} />
+        <Slider {...sliderProps}/>
       </Elements.Container>
     </Tooltip>
-  ), [value, onChange, inputRef])
+  ), [sliderProps, inputRef])
 }
 
 export default SliderTooltip;

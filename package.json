@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/rc-slider": "^9.3.1",
     "modern-css-reset": "^1.4.0",
     "rc-slider": "^10.0.0",
     "react": "^18.2.0",
@@ -24,7 +23,8 @@
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "@types/styled-components": "^5.1.25",
-    "@types/throttle-debounce": "^5.0.0"
+    "@types/throttle-debounce": "^5.0.0",
+    "@types/rc-slider": "^9.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
