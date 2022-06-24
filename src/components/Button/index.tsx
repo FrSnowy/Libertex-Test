@@ -3,7 +3,7 @@ import * as Elements from './elements';
 
 type ButtonProps = Omit<React.HTMLProps<HTMLButtonElement>, 'children' | 'type' | 'onCopy' | 'align' | 'ref' | 'as'> & {
   pre?: string | JSX.Element | null,
-  children?: string;
+  children?: React.ReactNode;
 }
 
 const Button: React.FC<ButtonProps> = ({
