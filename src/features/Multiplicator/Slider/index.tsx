@@ -21,6 +21,10 @@ const MultiplicatorSlider: React.FC<SliderProps> = ({ value, onChange, onDragSta
   const [innerValue, setInnerValue] = React.useState<number>(value || 1);
 
   React.useEffect(() => {
+    setInnerValue(value || 1);
+  }, [value]);
+
+  React.useEffect(() => {
     if (!ref) return;
     const slider = ref.firstChild as HTMLElement | null;
     if (!slider) return;
