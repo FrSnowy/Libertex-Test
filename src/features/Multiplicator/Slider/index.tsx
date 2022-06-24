@@ -9,12 +9,12 @@ const dotMap = {
   40: 40,
 };
 
-type SliderProps = {
-  current?: number,
+export type SliderProps = {
+  value?: number,
   onChange?: (v: number) => void,
 };
 
-const MultiplicatorSlider: React.FC<SliderProps> = ({ current, onChange }) => {
+const MultiplicatorSlider: React.FC<SliderProps> = ({ value, onChange }) => {
   const [ref, setRef] = React.useState<HTMLDivElement | null>(null);
 
   React.useEffect(() => {
@@ -27,14 +27,14 @@ const MultiplicatorSlider: React.FC<SliderProps> = ({ current, onChange }) => {
   }, [ref])
 
   const onChangeHandler = React.useCallback((v: number | number[]) => {
-    onChange && onChange(v as number);
+    onChange && v <= 40 && onChange(v as number);
   }, [onChange]);
 
   return React.useMemo(() => (
     <Elements.SliderWrapper ref={r => setRef(r)}>
-      <Slider min={1} max={40} dots={true} marks={dotMap} onChange={onChangeHandler}/>
+      <Slider min={1} max={40} dots={true} value={value} marks={dotMap} onChange={onChangeHandler}/>
     </Elements.SliderWrapper>
-  ), [])
+  ), [onChangeHandler, value])
 }
 
 export default MultiplicatorSlider;
